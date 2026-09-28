@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+title: AI Carbon Footprint Calculator
+message: If you use this software, please cite it as below.
+type: software
+version: 2.0.0
+date-released: "2026-09-24"
+license: GPL-3.0-or-later
+repository-code: https://github.com/ualtech/carbon_calculator/
+url: https://www.ualtech.es/projects/carbon_calculator/
+authors:
+  - family-names: Gil
+    given-names: Consolación
+    affiliation: Universidad de Almería
+  - family-names: Martínez-Gil
+    given-names: Fernando
+    affiliation: Universidad de Almería
+  - family-names: El Battioui
+    given-names: Yasin
+    affiliation: Universidad de Almería
+  - family-names: Isanbaev
+    given-names: Viktor
+    affiliation: Universidad de Almería
+  - family-names: Gómez
+    given-names: Julio
+    affiliation: Universidad de Almería
+  - family-names: Baños
+    given-names: Raúl
+    affiliation: Universidad de Almería

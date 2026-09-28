@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calculadora · CarbonAI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --green: #00ff88;
+      --lime: #aaff00;
+      --teal: #00e5cc;
+      --orange: #ff6b2b;
+      --dark: #0a0f0a;
+      --card: #111a11;
+      --card2: #0d1a0d;
+      --border: #1e3a1e;
+      --text: #e8f5e8;
+      --muted: #7a9e7a;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none; z-index: 0;
+    }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 2.5rem;
+      background: rgba(10,15,10,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo { font-size: 1.1rem; font-weight: 800; letter-spacing: 0.08em; color: var(--green); text-decoration: none; }
+    .logo span { color: var(--orange); }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a { color: var(--muted); text-decoration: none; font-size: 0.85rem; letter-spacing: 0.06em; font-weight: 700; transition: color 0.2s; }
+    nav ul a:hover, nav ul a.active { color: var(--green); }
+
+    .page {
+      position: relative; z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 7rem 2rem 4rem;
+    }
+
+    .page-header {
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .page-badge {
+      display: inline-block;
+      background: rgba(0,255,136,0.1);
+      border: 1px solid rgba(0,255,136,0.3);
+      color: var(--green);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem; letter-spacing: 0.12em;
+      padding: 0.3rem 0.8rem; border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+
+    h1 { font-size: 2.8rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+    h1 span { color: var(--green); }
+
+    .subtitle { color: var(--muted); margin-top: 0.6rem; font-size: 0.95rem; line-height: 1.6; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      animation: fadeUp 0.5s 0.15s ease both;
+    }
+
+    @media (max-width: 640px) { .layout { grid-template-columns: 1fr; } }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.8rem;
+    }
+
+    .panel-title {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+    }
+
+    .field { margin-bottom: 1.2rem; }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.05em;
+    }
+
+    input, select {
+      width: 100%;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+
+    input:focus, select:focus { border-color: var(--green); }
+
+    select option { background: #111a11; }
+
+    .btn {
+      width: 100%;
+      background: var(--green);
+      color: var(--dark);
+      border: none;
+      border-radius: 10px;
+      padding: 1rem;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+      margin-top: 0.5rem;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,255,136,0.3);
+    }
+
+    .btn:active { transform: translateY(0); }
+
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Results */
+    .results {
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .result-main {
+      background: linear-gradient(135deg, rgba(0,255,136,0.08), rgba(0,229,204,0.05));
+      border: 1px solid rgba(0,255,136,0.25);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 1rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 540px) { .result-main { grid-template-columns: 1fr; } }
+
+    .result-item { text-align: center; }
+
+    .result-val {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--green);
+      letter-spacing: -0.02em;
+    }
+
+    .result-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      margin-top: 0.3rem;
+    }
+
+    .equiv-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0.8rem;
+    }
+
+    .equiv-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .equiv-val {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.1rem;
+      color: var(--lime);
+      font-weight: 700;
+    }
+
+    .equiv-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+      line-height: 1.4;
+    }
+
+    .error-box {
+      background: rgba(255,107,43,0.1);
+      border: 1px solid rgba(255,107,43,0.3);
+      border-radius: 10px;
+      padding: 1rem 1.5rem;
+      color: var(--orange);
+      font-size: 0.85rem;
+    }
+
+    .loading {
+      text-align: center;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      padding: 2rem;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .orb { position: fixed; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: 0; }
+    .orb1 { width: 350px; height: 350px; background: rgba(0,255,136,0.06); top: -80px; left: -80px; }
+    .orb2 { width: 250px; height: 250px; background: rgba(0,229,204,0.05); bottom: 50px; right: 50px; }
+      .api-error { display:none; margin:1rem 0; padding:0.8rem 1rem; border:1px solid #e74c3c; border-radius:8px; color:#e74c3c; font-size:0.85rem; }
+    .api-error.show { display:block; }
+  </style>
+  <script src="config.js"></script>
+  <script>
+    // Prevenir recarga de página
+    window.addEventListener('beforeunload', function(e) {
+      e.stopImmediatePropagation();
+    });
+  </script>
+</head>
+<body>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <nav>
+    <a class="logo" href="index.html">CARBON<span>AI</span></a>
+    <ul>
+      <li><a href="calculate.html" class="active" data-i18n="nav_calc">Calcular</a></li>
+      <li><a href="compare.html" data-i18n="nav_cmp">Comparar</a></li>
+      <li><a href="simulate.html" data-i18n="nav_sim">Simular</a></li>
+    </ul>
+  </nav>
+
+  <div class="page">
+    <div class="page-header">
+      <div class="page-badge" data-i18n="calc_badge">⚡ CALCULADORA</div>
+      <h1 data-i18n-html="calc_h1">Calcula tu <span>huella</span></h1>
+      <p class="subtitle" data-i18n="calc_sub">Introduce los parámetros de tu consulta y obtén el CO₂ generado al instante.</p>
+    </div>
+
+    <div class="layout" id="layout">
+      <div class="panel">
+        <div id="apiError" class="api-error" role="alert"></div>
+        <div class="panel-title" data-i18n="p_model">// PARÁMETROS DEL MODELO</div>
+        <div class="field">
+          <label data-i18n="l_model">MODELO DE IA</label>
+          <select id="model_id"></select>
+        </div>
+        <div class="field">
+          <label data-i18n="l_region">REGIÓN</label>
+          <select id="region"></select>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title" data-i18n="p_tokens">// TOKENS</div>
+        <div class="field">
+          <label data-i18n="l_task">TIPO DE TAREA (rellena los tokens; puedes editarlos)</label>
+          <select id="task_type" onchange="applyTaskType(this.value, 'tokens_input', 'tokens_output')">
+            <option value="" data-i18n="opt_manual">— Introducir tokens manualmente —</option>
+          </select>
+        </div>
+        <div class="field">
+          <label data-i18n="l_tin">TOKENS DE ENTRADA</label>
+          <input type="number" id="tokens_input" placeholder="ej: 1000" data-i18n-ph="ph_tin" min="0"/>
+        </div>
+        <div class="field">
+          <label data-i18n="l_tout">TOKENS DE SALIDA</label>
+          <input type="number" id="tokens_output" placeholder="ej: 500" data-i18n-ph="ph_tout" min="0"/>
+        </div>
+      </div>
+
+      <div style="grid-column:1/-1; display:flex; justify-content:center;">
+        <button class="btn" id="calcBtn" type="button" onclick="doCalculate()" data-i18n="btn_calc">CALCULAR CO₂</button>
+      </div>
+
+      <div id="resultsArea" style="grid-column:1/-1;"></div>
+    </div>
+  </div>
+
+  <script>
+    const API = window.CC_API || "http://localhost:8000";
+    function showApiError(e) {
+      const box = document.getElementById("apiError");
+      if (box) {
+        box.textContent = "No se pudo conectar con la API en " + API + " (" + (e && e.message ? e.message : e) + "). " +
+          "Comprueba la URL en frontend/config.js y que el backend esté en marcha. / Could not reach the API at " + API + ".";
+        box.classList.add("show");
+      }
+      console.error("API error:", e);
+    }
+    async function getJson(path) {
+      const r = await fetch(`${API}${path}`);
+      if (!r.ok) throw new Error(`HTTP ${r.status} en ${path}`);
+      return r.json();
+    }
+
+
+    let TASK_TYPES = [], MODELS = [], REGIONS = [];
+
+    function fillSelect(id, items, valueOf, labelOf, keepFirst) {
+      const sel = document.getElementById(id);
+      const current = sel.value;
+      const first = keepFirst ? sel.options[0] : null;
+      sel.innerHTML = "";
+      if (first) sel.appendChild(first);
+      items.forEach(it => {
+        const o = document.createElement("option");
+        o.value = valueOf(it); o.textContent = labelOf(it);
+        if (it.descripcion) o.title = it.descripcion;
+        sel.appendChild(o);
+      });
+      if (current) sel.value = current;
+    }
+
+    function relabel() {
+      fillSelect("model_id", MODELS, m => m.id_modelo, m => `${tModel(m.nombre_modelo)} (${m.proveedor})`);
+      fillSelect("region", REGIONS, r => r.nombre_region, r => tRegion(r.nombre_region));
+      fillSelect("task_type", TASK_TYPES, x => x.tipo,
+                 x => `${tTask(x.tipo, x.etiqueta)} · ${x.tokens_entrada + x.tokens_salida} ${t("tokens_word")}`, true);
+    }
+    window.onLangChange = relabel;
+
+    function applyTaskType(tipo, inId, outId) {
+      const t = TASK_TYPES.find(x => x.tipo === tipo);
+      if (!t) return;
+      document.getElementById(inId).value = t.tokens_entrada;
+      document.getElementById(outId).value = t.tokens_salida;
+    }
+
+    async function loadSelects() {
+      try {
+        [MODELS, REGIONS] = await Promise.all([getJson("/models"), getJson("/regions")]);
+        try { TASK_TYPES = await getJson("/task_types"); }          // opcional: backend antiguo sin /task_types
+        catch (e) { TASK_TYPES = []; console.warn("Sin tipos de tarea:", e.message); }
+        relabel();
+      } catch(e) {
+        showApiError(e);
+      }
+    }
+
+    async function doCalculate() {
+      const btn = document.getElementById("calcBtn");
+      const area = document.getElementById("resultsArea");
+      btn.disabled = true;
+      area.innerHTML = `<div class="loading">${t("loading_calc")}</div>`;
+
+      const body = {
+        tokens_input: parseInt(document.getElementById("tokens_input").value) || 0,
+        tokens_output: parseInt(document.getElementById("tokens_output").value) || 0,
+        model_id: parseInt(document.getElementById("model_id").value),
+        region: document.getElementById("region").value
+      };
+
+      try {
+        const res = await fetch(`${API}/calculate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Error en el servidor");
+        renderResults(data);
+      } catch(e) {
+        area.innerHTML = `<div class="error-box">⚠️ ${e.message}</div>`;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function renderResults(data) {
+      const c = data.calculation;
+      const eq = data.equivalences;
+
+      const equivHTML = Object.entries(eq).map(([k,v]) => `
+        <div class="equiv-item">
+          <div class="equiv-val">${v}</div>
+          <div class="equiv-label">${tEquiv(k)}</div>
+        </div>
+      `).join("");
+
+      document.getElementById("resultsArea").innerHTML = `
+        <div class="results">
+          <div class="panel-title" style="margin-bottom:0.8rem">${t("r_result")}</div>
+          <div class="result-main">
+            <div class="result-item">
+              <div class="result-val">${c.co2_kg}</div>
+              <div class="result-label">${t("r_kg")}</div>
+            </div>
+            <div class="result-item">
+              <div class="result-val">${c.kwh}</div>
+              <div class="result-label">${t("r_kwh")}</div>
+            </div>
+            <div class="result-item">
+              <div class="result-val">${c.tokens_total.toLocaleString()}</div>
+              <div class="result-label">${t("r_tokens")}</div>
+            </div>
+          </div>
+          <div class="panel-title" style="margin-bottom:0.8rem">${t("r_equiv")}</div>
+          <div class="equiv-grid">${equivHTML}</div>
+        </div>
+      `;
+    }
+
+    loadSelects();
+  </script>
+  <script src="i18n.js"></script>
+</body>
+</html>

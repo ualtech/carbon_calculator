@@ -1,0 +1,5 @@
+id_equivalencia;tipo;factor_conversion;unidad;fuente;notas
+1;km en coche de gasolina medio;4.095;km;US EPA, Greenhouse Gas Equivalencies Calculator (3.93e-4 t CO2e por milla = 0.244 kg CO2e/km);1 kg CO2e = 4.095 km
+2;horas de streaming de video;27.78;horas;IEA 2020, The carbon footprint of streaming video: fact-checking the headlines (36 gCO2 por hora, media mundial 2019);1 kg CO2 = 27.78 h
+3;cargas completas de smartphone;80.65;cargas;US EPA, Greenhouse Gas Equivalencies Calculator (1.24e-5 t CO2 por carga);1 kg CO2 = 80.65 cargas
+4;plantones de arbol creciendo 10 anos;0.01667;plantones;US EPA, Greenhouse Gas Equivalencies Calculator (0.060 t CO2 secuestradas por planton en 10 anos);1 kg CO2 = 1/60 planton

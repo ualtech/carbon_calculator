@@ -1,0 +1,4 @@
+id_tipo;tipo;etiqueta;tokens_entrada;tokens_salida;descripcion;fuente
+1;simple;Simple (pregunta directa);300;700;Consulta breve con respuesta corta: definicion, aclaracion, pregunta factual;Calibrado por los autores sobre los portafolios del programa (dic-2025 a feb-2026): ~1000 tokens por interaccion
+2;medium;Media (diseno de actividad);700;1550;Peticion con contexto y respuesta elaborada: diseno de una actividad, resumen, comparacion, revision de un texto;Calibrado por los autores sobre los portafolios del programa: 2000-2500 tokens por interaccion
+3;complex;Compleja (unidad o planificacion completa);1300;3200;Prompt largo con instrucciones en varias fases y salida extensa: planificacion completa, rubricas, secuencias de unidad;Calibrado por los autores sobre los portafolios del programa: 4200-4700 tokens por interaccion

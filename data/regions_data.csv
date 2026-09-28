@@ -1,0 +1,5 @@
+id_region;nombre_region;intensidad_carbono_kg_kwh;anio_referencia;fuente
+1;España;0.258;2025;CNMC, Etiquetado de la electricidad: energia producida en 2025 (mix nacional 258 gCO2eq/kWh), Madrid, 2026
+2;Europa;0.255;2022;Ember, European Electricity Review 2023 (UE-27, 255 gCO2/kWh en 2022)
+3;USA;0.384;2024;Ember, Global Electricity Review 2025 (Estados Unidos, 384 gCO2/kWh en 2024)
+4;Global;0.473;2024;Ember, Global Electricity Review 2025 (media mundial, 473 gCO2/kWh en 2024)
